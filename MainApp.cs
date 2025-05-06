@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using static System.Console;
+
+namespace Generic
+{
+    class MyList<T> : IEnumerable<T>, IEnumerator<T>
+    {
+        // 필드
+        private T[] array;
+        int position = -1;
+
+        // 생성자
+        public MyList()
+        {
+            array = new T[3];
+        }
+
+        // 프로퍼티(속성)
+        public T this[int index]
+        {
+            get
+            {
+                return array[index];
+            }
+
+            set
+            {
+                if (index >= array.Length)
+                {
+                    Array.Resize<T>(ref array, index + 1);
+                    WriteLine($"Array Resized: {array.Length}");
+                }
+
+                array[index] = value;
+                // ex)
+                // str_list[0] = "abc";
+            }
+        }
+
+        public int Length
+        {
+            get
+            {
+                return array.Length;
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this;
+        }
+
+        public T Current
+        {
+            get
+            {
+                return array[position];
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                return array[position];
+            }
+        }
+
+        public bool MoveNext()
+        {
+            if (position == array.Length - 1)
+            {
+                Reset();
+                return false;
+            }
+
+            position++;
+            return (position < array.Length);
+        }
+
+        public void Reset()
+        {
+            position = -1;
+        }
+
+        public void Dispose()
+        {
+
+        }
+    }
+
+    class MainApp
+    {
+        static void Main(string[] args)
+        {
+            MyList<string> str_list = new MyList<string>();
+            str_list[0] = "abc";
+            str_list[1] = "def";
+            str_list[2] = "ghi";
+            str_list[3] = "jkl";
+
+            foreach (string str in str_list)
+            {
+                WriteLine(str);
+            }
+
+            WriteLine();
+
+            MyList<int> int_list = new MyList<int>();
+            int_list[0] = 0;
+            int_list[1] = 1;
+            int_list[2] = 2;
+            int_list[3] = 3;
+
+            foreach (int num in int_list)
+            {
+                WriteLine(num);
+            }
+        }
+    }
+}
